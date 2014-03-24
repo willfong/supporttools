@@ -32,11 +32,9 @@ foreach( 1..$inserts ){
         generate_random_string(5),
         generate_random_date()
       );
-  }
-
-  print "Done\n";
-
 }
+
+print "Done\n";
 
 
 sub generate_random_string {
@@ -56,9 +54,7 @@ sub generate_random_string {
 }
 
 sub generate_random_date {
-
   my $seconds_in_year = 31536000;
   my $timestamp = int(rand($seconds_in_year * 2)) + 1356969600;
   return strftime("%Y-%m-%d", localtime($timestamp));
-
 }
