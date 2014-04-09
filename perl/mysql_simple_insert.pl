@@ -22,7 +22,7 @@ my $int = 4294967294;
 my $ints = 2147483647;
 my $tinyint = 254;
 
-my $conn = DBI->connect("dbi:mysql:dbname=test;host=localhsot;port=3306", "root", "");
+my $conn = DBI->connect("dbi:mysql:dbname=test;host=localhost;port=3306", "root", "");
 
 my $query = $conn->prepare( "INSERT INTO clients ( fname, lname, signed ) VALUES ( ?, ?, ? )" );
 
