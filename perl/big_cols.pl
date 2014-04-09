@@ -13,12 +13,22 @@ my $num_of_rcpt = $ARGV[0];
 
 foreach( 1..$num_of_rcpt ){
 
-  my $val1 = int( rand(1000000) );
-  my $val2 = int( rand(1000000) );
-  my $val3 = int( rand(1000000) );
-  my $val4 = int( rand(1000000) );                                     
+  # CREATE TABLE mytable ( a INT UNSIGNED PRIMARY KEY AUTO_INCREMENT, b INT UNSIGNED, c INT UNSIGNED, d INT UNSIGNED, e INT UNSIGNED, f VARCHAR(150), g VARCHAR(150), h VARCHAR(150), i VARCHAR(150) );
+
+  # LOAD DATA INFILE '/tmp/1.txt' INTO TABLE mytable ( b, c, d, e, f, g, h, i );
+
+  my $val1 = int( rand(4000000) );
+  my $val2 = int( rand(4000000) );
+  my $val3 = int( rand(4000000) );
+  my $val4 = int( rand(4000000) );
+
   my $val5 = generate_random_string( int( rand(95) ) + 5 );
-  my $value = "$val1\t$val2\t$val3\t$val4\t$val5\n";
+  my $val6 = generate_random_string( int( rand(95) ) + 5 );
+  my $val7 = generate_random_string( int( rand(95) ) + 5 );
+  my $val8 = generate_random_string( int( rand(95) ) + 5 );
+
+  my $value = "$val1\t$val2\t$val3\t$val4\t$val5\t$val6\t$val7\t$val8\n";
+
 
   print( $value );
 
