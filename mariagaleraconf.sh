@@ -25,9 +25,9 @@ wsrep_cluster_name='my_galera_cluster'
 wsrep_node_address='`ifconfig eth0|grep "inet addr"|cut -d ":" -f 2|cut -d " " -f 1`'
 wsrep_node_name='`hostname`'
 wsrep_sst_method=xtrabackup
-wsrep_sst_auth=root:rootpa$$
+wsrep_sst_auth=galera:rootpass
 
 
 EOF
 
-echo "Please remember to set wsrep_cluster_address to all the other nodes\n"
+echo "Please remember to set wsrep_cluster_address to all the other nodes"
