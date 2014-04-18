@@ -15,11 +15,11 @@ binlog_format=ROW
 default_storage_engine=innodb
 innodb_autoinc_lock_mode=2
 
-datadir=/mnt/mysql/data
+datadir=/var/lib/mysql
 
 # 3. wsrep provider configuration: basic wsrep options
 wsrep_provider=/usr/lib64/galera/libgalera_smm.so
-wsrep_provider_options="gcache.size=32G; gcache.page_size=1G"
+wsrep_provider_options="gcache.size=2G; gcache.page_size=1G"
 wsrep_cluster_address=gcomm://node1,node2,node3
 wsrep_cluster_name='my_galera_cluster'
 wsrep_node_address='`ifconfig eth0|grep "inet addr"|cut -d ":" -f 2|cut -d " " -f 1`'
@@ -29,3 +29,5 @@ wsrep_sst_auth=root:rootpa$$
 
 
 EOF
+
+echo "Please remember to set wsrep_cluster_address to all the other nodes\n"
