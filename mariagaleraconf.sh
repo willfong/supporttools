@@ -1,3 +1,5 @@
+yum -y install MariaDB-Galera-server MariaDB-client galera nc percona-xtrabackup
+
 cat <<EOF > /etc/my.cnf.d/server.cnf
 [mysqld]
 innodb_buffer_pool_size=2G
