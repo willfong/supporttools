@@ -18,28 +18,20 @@ my $num_of_updates = $ARGV[0];
 
 
 my $conn = DBI->connect("dbi:mysql:dbname=test", "root");
-my $query = $conn->prepare( "UPDATE mytable SET f = ? WHERE a = ?" );
-
-my $max_int = 4000000000;
-my $old_max_int_counter = 10000;
+my $query = $conn->prepare( "INSERT INTO mytable ( b, c, d, e, f, g, h, i ) VALUES (?,?,?,?,?,?,?,?)" );
 
 foreach( 1..$num_of_updates ){
-
-  # Grab the max ID value every 10k updates.
-  if( $old_max_int_counter == 10000 ){
-    $old_max_int_counter = 0;
-    my $query_maxint = $conn->prepare( "SELECT MAX(a) FROM mytable");
-    $query_maxint->execute();
-    my $ref = $query_maxint->fetchrow_arrayref;
-    $max_int = $$ref[0];
-  } else {
-    $old_max_int_counter++;
-  }
-
-  my $a = int( rand( $max_int ) );
-  my $f = generate_random_string(int(rand(30))+1);
  
-  $query->execute( $f, $a );
+  $query->execute( 
+    int( rand(4000000) ),
+    int( rand(4000000) ),
+    int( rand(4000000) ),
+    int( rand(4000000) ),
+    generate_random_string( int( rand(95) ) + 5 ),
+    generate_random_string( int( rand(95) ) + 5 ),
+    generate_random_string( int( rand(95) ) + 5 ),
+    generate_random_string( int( rand(95) ) + 5 )
+    );
 }
 
 

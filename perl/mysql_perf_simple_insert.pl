@@ -5,7 +5,6 @@ use warnings;
 
 use DBI;
 use POSIX;
-use Time::HiRes qw(time);
 
 # Check input params
 my $num_args = $#ARGV + 1;
@@ -31,14 +30,18 @@ my $counter = 0;
 
 foreach( 1..$count ){
   $counter++;
-  my $conn = DBI->connect("dbi:mysql:dbname=test;host=localhost;port=3306", "root", "");
+  my $conn = DBI->connect("dbi:mysql:dbname=test;host=127.0.0.1;port=33001", "root", "");
 
-  my $start = time;
 
   my $query = $conn->prepare( "
     INSERT INTO perftest 
       ( counter, a, b, c ) 
     VALUES 
+      ( ?, ?, ?, ? ),
+      ( ?, ?, ?, ? ),
+      ( ?, ?, ?, ? ),
+      ( ?, ?, ?, ? ),
+      ( ?, ?, ?, ? ),
       ( ?, ?, ?, ? ),
       ( ?, ?, ?, ? ),
       ( ?, ?, ?, ? ),
@@ -67,15 +70,30 @@ foreach( 1..$count ){
         $counter,
         int( rand(100)+1 ),
         int( rand(100)+1 ),
+        int( rand(100)+1 ),
+        $counter,
+        int( rand(100)+1 ),
+        int( rand(100)+1 ),
+        int( rand(100)+1 ),
+        $counter,
+        int( rand(100)+1 ),
+        int( rand(100)+1 ),
+        int( rand(100)+1 ),
+        $counter,
+        int( rand(100)+1 ),
+        int( rand(100)+1 ),
+        int( rand(100)+1 ),
+        $counter,
+        int( rand(100)+1 ),
+        int( rand(100)+1 ),
+        int( rand(100)+1 ),
+        $counter,
+        int( rand(100)+1 ),
+        int( rand(100)+1 ),
         int( rand(100)+1 )
       );
   }
 
-  my $end = time;
-
-  my $total = $end - $start;
-  my $qps = ($transactions * 5) / $total;
-
-  print "$qps\n"
+  print "$counter\n"
 
 }

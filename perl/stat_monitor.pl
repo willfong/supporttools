@@ -18,7 +18,7 @@ if ($num_args != 2) {
 my $statusvar = $ARGV[0];
 my $interval = $ARGV[1];
 
-my $conn = DBI->connect("dbi:mysql:host=localhost;port=3306", "root", "");
+my $conn = DBI->connect("dbi:mysql:host=127.0.0.1;port=33001", "root", "");
 
 my $query = $conn->prepare( "SHOW GLOBAL STATUS LIKE '$statusvar'" );
 
