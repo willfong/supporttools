@@ -11,10 +11,6 @@ Sample Config:
 user=mha
 password=mha
 ssh_user=root
-# working directory on the manager
-manager_workdir=/var/log/masterha/app1
-# working directory on MySQL servers
-remote_workdir=/var/log/masterha/app1
   
 [server1]
 hostname=host1
