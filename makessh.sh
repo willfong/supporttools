@@ -30,7 +30,12 @@ SbuKaT7+f0PutrVIP1bjzJQWZy4MZbHDQUB9kJoE27iV5GuVoQ==
 -----END RSA PRIVATE KEY-----
 EOF
 
+chmod 600 /root/.ssh/id_rsa
+
+# We should probably check to see if this is already in there first
+
 cat <<EOF >> /root/.ssh/authorized_keys
 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA11nC2YJgHbOemMxL3NtQD2+gv5eGkxIc0WIG8NzyY4knTXH2dP49YERD9I5EJBp1gPPeAlPDsOLXvmo9gNYSSs+mq3DkL4JmTLoklbfKo8Z5X6FAzvYyndqbO0ACxxnPsi01t7jx4r53mMh/GFjhVr1QeYfgZcny7sdTi/9kehvzYHaZ/HgqxfZtyRvwMIswWsJOZtfH1lb3Zb9VJjzhYQuVYQM1DHVrBNwjGVsM+6qMXONZuYkKqsomMljJPpteFNGvu6g8ta9UUC01UjsWjDfubqxls2xZ0HN54CKEqQcTEAMganTBk+iyi6KWThNRaQUDF8n7VgZsnMN8TNgYkQ== root@mha1
 EOF
 
+chmod 600 /root/.ssh/authorized_keys
