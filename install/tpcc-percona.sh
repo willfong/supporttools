@@ -1,3 +1,4 @@
+yum -y groupinstall "Development Tools"
 yum -y install bzr
 yum -y install mysql-devel
 bzr branch lp:~percona-dev/perconatools/tpcc-mysql
