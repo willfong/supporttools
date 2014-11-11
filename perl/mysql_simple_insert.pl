@@ -24,7 +24,7 @@ my $tinyint = 254;
 
 my $conn = DBI->connect("dbi:mysql:dbname=test;host=localhost;port=3306", "root", "");
 
-my $query = $conn->prepare( "INSERT INTO clients ( fname, lname, signed ) VALUES ( ?, ?, ? )" );
+my $query = $conn->prepare( "INSERT INTO clients ( fname, lname, signed, nodeid ) VALUES ( ?, ?, ?, 1 )" );
 
 foreach( 1..$inserts ){
     $query->execute(
