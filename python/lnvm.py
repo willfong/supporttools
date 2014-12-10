@@ -20,9 +20,14 @@ url = '''https://api.linode.com/'''
 
 payload = { 'api_key': key, 'api_action': 'linode.create', 'DatacenterID': 8, 'PlanID': 1 }
 print "Creating Node..."
-r = requests.post(url, params=payload)
 
-nodeid = r.json()['DATA']['LinodeID']
+try:
+  r = requests.post(url, params=payload)
+  nodeid = r.json()['DATA']['LinodeID']
+except:
+  print "Error!"
+  print r.text
+  exit()
 
 payload = { 'api_key': key, 'api_action': 'linode.update', 'LinodeID': nodeid, 'Label': nodename }
 print "Updating Node..."
