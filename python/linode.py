@@ -43,6 +43,9 @@ def list_vms():
       p2 = { 'api_key': key, 'api_action': 'linode.ip.list', 'LinodeID': d['LINODEID'] }
       r2 = requests.post(url, params=p2)
 
+      pubip = 'None'
+      priip = 'None'
+
       for d2 in r2.json()['DATA']:
 
         if d2['ISPUBLIC'] == 1:
@@ -52,6 +55,32 @@ def list_vms():
 
 
       print "ID: {} \tName: {}\tPublic IP: {}\tPrivate IP: {}".format( d['LINODEID'], d['LABEL'], pubip, priip)
+
+
+def list_dc():
+
+  payload = { 'api_key': key, 'api_action': 'avail.datacenters' }
+  r = requests.post(url, params=payload)
+
+  print "\n\nList of data centers\n"
+  print "DC ID:\tLocation:"
+  print "------\t---------\n"
+
+  for d in r.json()['DATA']:
+    print "{}\t{}".format(d['DATACENTERID'], d['LOCATION'])
+
+
+def list_plan():
+
+  payload = { 'api_key': key, 'api_action': 'avail.linodeplans' }
+  r = requests.post(url, params=payload)
+
+  print "\n\nList of Linode plans\n"
+  print "Plan:\tPrice:\tCPU:\tRAM:\tStorage:"
+  print "-----\t------\t----\t----\t--------\n"
+
+  for d in r.json()['DATA']:
+    print "{}\t${}\t{}\t{}\t{}".format(d['PLANID'], str(int(d['PRICE'])), d['CORES'], d['RAM'], d['DISK'])
 
 
 def delete_vm(args):
@@ -89,6 +118,12 @@ while action != 'quit':
 
   if action == 'list':
     list_vms()
+
+  if action == 'dc':
+    list_dc()
+
+  if action == 'plan':
+    list_plan()
 
   cmd = re.findall( '^delete (\d+)$', action)
   if cmd:
