@@ -83,6 +83,77 @@ def list_plan():
     print "{}\t${}\t{}\t{}\t{}".format(d['PLANID'], str(int(d['PRICE'])), d['CORES'], d['RAM'], d['DISK'])
 
 
+def wizard_add_server():
+
+  '''One of these days, need to verify that the DC and Plan ID's are valid'''
+
+  list_dc()
+  dc_id = raw_input( "\nWhich DC? ")
+
+  if not dc_id.isdigit(): print "\nNot a valid datacenter ID"
+
+  list_plan()
+  plan_id = raw_input( "\nWhich plan? ")
+
+  if not dc_id.isdigit(): print "\nNot a valid datacenter ID"
+
+  name = raw_input( "\nName of VM? ")
+
+  if not len(name) > 0: print "\nNeed a name!"
+
+  payload = { 'api_key': key, 'api_action': 'linode.create', 'DatacenterID': dc_id, 'PlanID': plan_id }
+  print "Creating Node..."
+
+  try:
+    r = requests.post(url, params=payload)
+    nodeid = r.json()['DATA']['LinodeID']
+  except:
+    print "Error!"
+    print r.text
+    exit()
+
+  payload = { 'api_key': key, 'api_action': 'linode.update', 'LinodeID': nodeid, 'Label': name }
+  print "Updating Node..."
+  r = requests.post(url, params=payload)
+
+  payload = { 'api_key': key, 'api_action': 'linode.ip.addprivate', 'LinodeID': nodeid }
+  print "Adding Private IP..."
+  r = requests.post(url, params=payload)
+
+  payload = { 'api_key': key, 'api_action': 'linode.ip.list', 'LinodeID': nodeid }
+  r = requests.post(url, params=payload)
+
+  print "IP Addresses:"
+  for d in r.json()['DATA']:
+
+    ip = d['IPADDRESS']
+
+    if d['ISPUBLIC'] == 1:
+      type = "Public"
+    else:
+      type = "Private"
+      privateip = ip
+
+    print "{} IP: {}".format( type, ip )
+
+
+  udf = '{"hostname": "' + name + '", "privateip": "' + privateip + '"}'
+  payload = { 'api_key': key, 'api_action': 'linode.disk.createfromstackscript', 'LinodeID': nodeid, 'StackScriptID': 9958, 'StackScriptUDFResponses': udf, 'DistributionID': 127, 'Label': 'Disk', 'Size': 22000, 'rootPass': 'rootPass123' }
+  print "Adding Will's Magic..."
+  r = requests.post(url, params=payload)
+
+  diskid = r.json()['DATA']['DiskID']
+
+  payload = { 'api_key': key, 'api_action': 'linode.config.create', 'LinodeID': nodeid, 'KernelID': 138, 'Label': 'Stock Config', 'DiskList': diskid, 'RootDeviceNum': 1 }
+  print "Configuring Node..."
+  r = requests.post(url, params=payload)
+
+  payload = { 'api_key': key, 'api_action': 'linode.boot', 'LinodeID': nodeid }
+  print "Booting Node..."
+  r = requests.post(url, params=payload)
+
+
+
 def delete_vm(args):
 
   nodeid = args[0]
@@ -124,6 +195,10 @@ while action != 'quit':
 
   if action == 'plan':
     list_plan()
+
+  if action == 'add server':
+    wizard_add_server()
+
 
   cmd = re.findall( '^delete (\d+)$', action)
   if cmd:
