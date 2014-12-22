@@ -113,7 +113,7 @@ def wizard_add_server():
     exit()
 
   payload = { 'api_key': key, 'api_action': 'linode.update', 'LinodeID': nodeid, 'Label': name }
-  print "Updating Node..."
+  print "Updating Node... (Label: {})".format(name)
   r = requests.post(url, params=payload)
 
   payload = { 'api_key': key, 'api_action': 'linode.ip.addprivate', 'LinodeID': nodeid }
