@@ -2,11 +2,9 @@
 
 user=mysql
 
-log_error=/mysql/data/mysql.err
-lc_messages_dir=/mysql/share/
-
 basedir=/mysql
 datadir=/mysql/data/
+lc_messages_dir=/mysql/share/
 
 innodb_buffer_pool_size=64M
 innodb_log_file_size=64M
