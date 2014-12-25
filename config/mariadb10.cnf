@@ -1,6 +1,7 @@
 [mysqld]
 
-log_error=/var/lib/mysql/mysql.err
+log_error=/mysql/data/mysql.err
+lc_messages_dir=/mysql/share/english/
 
 innodb_buffer_pool_size=64M
 innodb_log_file_size=64M
