@@ -1,5 +1,6 @@
 [mysqld]
 
+user=mysql
 log_error=/mysql/data/mysql.err
 lc_messages_dir=/mysql/share/
 datadir=/mysql/data/
