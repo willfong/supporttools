@@ -2,6 +2,8 @@
 
 user=mysql
 
+skip-grant-tables=1
+
 basedir=/mysql
 datadir=/mysql/data/
 lc_messages_dir=/mysql/share/
