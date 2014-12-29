@@ -3,6 +3,7 @@
 user=mysql
 
 skip-grant-tables=1
+skip-name-resolve=1
 
 basedir=/mysql
 datadir=/mysql/data/

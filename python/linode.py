@@ -13,7 +13,7 @@ except:
 
 url = '''https://api.linode.com/'''
 
-ignored_nodes = [587382]
+ignored_nodes = [792915]
 
 
 def help():
