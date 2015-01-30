@@ -1,1 +1,1 @@
-yum -y install http://www.percona.com/downloads/percona-release/percona-release-0.0-1.x86_64.rpm
+yum -y install http://www.percona.com/downloads/percona-release/redhat/0.1-3/percona-release-0.1-3.noarch.rpm
