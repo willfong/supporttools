@@ -1,6 +1,7 @@
 [mysqld]
 
 user=mysql
+skip-grant-tables=1
 
 # Mandatory Settings
 binlog_format=ROW
