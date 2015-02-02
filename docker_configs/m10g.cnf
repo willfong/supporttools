@@ -1,5 +1,7 @@
 [mysqld]
 
+user=mysql
+
 # Mandatory Settings
 binlog_format=ROW
 default_storage_engine=InnoDB
