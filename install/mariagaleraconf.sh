@@ -1,9 +1,7 @@
-yum -y install MariaDB-Galera-server MariaDB-client galera nc percona-xtrabackup
-
-cat <<EOF > /etc/my.cnf.d/server.cnf
+cat <<EOF > /etc/my.cnf
 [mysqld]
-innodb_buffer_pool_size=2G
-innodb_log_file_size=1G
+innodb_buffer_pool_size=256M
+innodb_log_file_size=128M
 sync_binlog=0
 innodb_flush_log_at_trx_commit=2
 skip-innodb_doublewrite
@@ -21,13 +19,11 @@ datadir=/var/lib/mysql
 
 # 3. wsrep provider configuration: basic wsrep options
 wsrep_provider=/usr/lib64/galera/libgalera_smm.so
-wsrep_provider_options="gcache.size=2G; gcache.page_size=1G"
-wsrep_cluster_address=gcomm://node1,node2,node3
+wsrep_provider_options="gcache.size=1G; gcache.page_size=1G"
+wsrep_cluster_address=gcomm://
 wsrep_cluster_name='my_galera_cluster'
-wsrep_node_address='`ifconfig eth0|grep "inet addr"|cut -d ":" -f 2|cut -d " " -f 1`'
 wsrep_node_name='`hostname`'
-wsrep_sst_method=xtrabackup
-wsrep_sst_auth=galera:rootpass
+wsrep_sst_method=rsync
 
 
 EOF
