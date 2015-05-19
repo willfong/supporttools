@@ -1,6 +1,9 @@
 cat <<EOF > /etc/my.cnf
 [mysqld]
 log_error=/var/lib/mysql/mysql.err
+datadir=/var/lib/mysql
+pid_file=/var/lib/mysql/mysql.pid
+
 
 innodb_buffer_pool_size=256M
 innodb_log_file_size=256M
