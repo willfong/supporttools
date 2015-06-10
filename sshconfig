@@ -1,7 +1,14 @@
 
 # Linode Tokyo
 
-Host 106.187.*.*
+
+Host 106.184.*.*
+  User root
+  ChallengeResponseAuthentication no
+  StrictHostKeyChecking no
+  UserKnownHostsFile=/dev/null
+
+Host 106.185.*.*
   User root
   ChallengeResponseAuthentication no
   StrictHostKeyChecking no
@@ -13,11 +20,12 @@ Host 106.186.*.*
   StrictHostKeyChecking no
   UserKnownHostsFile=/dev/null
 
-Host 106.185.*.*
+Host 106.187.*.*
   User root
   ChallengeResponseAuthentication no
   StrictHostKeyChecking no
   UserKnownHostsFile=/dev/null
+
 
 # Linode TX
 
