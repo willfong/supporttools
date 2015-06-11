@@ -11,11 +11,12 @@ if ($num_args != 1) {
 
 my $num_of_rcpt = $ARGV[0];
 
+print STDERR "\n\nGeneral Usage:\n\n";
+print STDERR "CREATE TABLE mytable ( a INT UNSIGNED PRIMARY KEY AUTO_INCREMENT, b INT UNSIGNED, c INT UNSIGNED, d INT UNSIGNED, e INT UNSIGNED, f VARCHAR(150), g VARCHAR(150), h VARCHAR(150), i VARCHAR(150) );\n\n";
+print STDERR "LOAD DATA INFILE '/tmp/1.txt' INTO TABLE mytable ( b, c, d, e, f, g, h, i );\n\n";
+
+
 foreach( 1..$num_of_rcpt ){
-
-  # CREATE TABLE mytable ( a INT UNSIGNED PRIMARY KEY AUTO_INCREMENT, b INT UNSIGNED, c INT UNSIGNED, d INT UNSIGNED, e INT UNSIGNED, f VARCHAR(150), g VARCHAR(150), h VARCHAR(150), i VARCHAR(150) );
-
-  # LOAD DATA INFILE '/tmp/1.txt' INTO TABLE mytable ( b, c, d, e, f, g, h, i );
 
   my $val1 = int( rand(4000000) );
   my $val2 = int( rand(4000000) );
