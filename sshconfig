@@ -6,6 +6,12 @@ Host 139.162.*.*
   StrictHostKeyChecking no
   UserKnownHostsFile=/dev/null
 
+Host 103.3.*.*
+  User root
+  ChallengeResponseAuthentication no
+  StrictHostKeyChecking no
+  UserKnownHostsFile=/dev/null
+
 # Linode Tokyo
 
 Host 106.184.*.*
