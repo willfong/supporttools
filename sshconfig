@@ -118,3 +118,13 @@ Host 198.58.*.*
   ChallengeResponseAuthentication no
   StrictHostKeyChecking no
   UserKnownHostsFile=/dev/null
+
+
+# Local nodes
+
+Host 10.*.*.*
+  User root
+  ChallengeResponseAuthentication no
+  StrictHostKeyChecking no
+  UserKnownHostsFile=/dev/null
+
