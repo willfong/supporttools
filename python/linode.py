@@ -71,9 +71,13 @@ def list_dc():
   print "DC ID:\tLocation:"
   print "------\t---------\n"
 
+  valid = []
+
   for d in datacenters:
     print "{}\t{}".format(d['DATACENTERID'], d['LOCATION'])
+    valid.append(d['DATACENTERID'])
 
+  return valid
 
 def list_plan():
   global plans
@@ -86,23 +90,31 @@ def list_plan():
   print "Plan:\tPrice:\tCPU:\tRAM:\tStorage:"
   print "-----\t------\t----\t----\t--------\n"
 
+  valid = []
+
   for d in plans:
     print "{}\t${}\t{}\t{}\t{}".format(d['PLANID'], str(int(d['PRICE'])), d['CORES'], d['RAM'], d['DISK'])
+    valid.append(d['PLANID'])
 
+  return valid
 
 def wizard_add_server():
 
   '''One of these days, need to verify that the DC and Plan ID's are valid'''
 
-  list_dc()
+  valid = list_dc()
   dc_id = raw_input( "\nWhich DC? ")
 
-  if not dc_id.isdigit(): print "\nNot a valid datacenter ID"
+  if int(dc_id) not in valid:
+    print "\nNot a valid datacenter ID"
+    return
 
-  list_plan()
+  valid = list_plan()
   plan_id = raw_input( "\nWhich plan? ")
 
-  if not dc_id.isdigit(): print "\nNot a valid datacenter ID"
+  if int(plan_id) not in valid: 
+    print "\nNot a valid plan ID"
+    return
 
   name = raw_input( "\nName of VM? ")
 
