@@ -198,6 +198,33 @@ def delete_vm(args):
   print r.json() 
 
 
+if len(sys.argv) == 2:
+  nodename = sys.argv[1]
+  
+  payload = { 'api_key': key, 'api_action': 'linode.list' }
+  r = requests.post(url, params=payload)
+  
+  for d in r.json()['DATA']:
+    if nodename == d['LABEL']:
+      p2 = { 'api_key': key, 'api_action': 'linode.ip.list', 'LinodeID': d['LINODEID'] }
+      r2 = requests.post(url, params=p2)
+
+      pubip = 'None'
+      priip = 'None'
+
+      for d2 in r2.json()['DATA']:
+
+        if d2['ISPUBLIC'] == 1:
+          pubip = d2['IPADDRESS']
+        else:
+          priip = d2['IPADDRESS']
+      
+      from subprocess import call
+      print "Connecting to {} ({})".format( nodename, pubip )
+      call( "ssh " + pubip, shell=True )
+       
+
+  sys.exit()
 
 action = 'list' # default action when we first start
 
