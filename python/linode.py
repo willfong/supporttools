@@ -6,6 +6,7 @@ import requests
 
 datacenters = False
 plans = False
+hosts = {}
 
 try: 
   f = open('.linodeapi', 'r')
@@ -34,6 +35,7 @@ quit - Quit
 
 
 def list_vms():
+  global hosts
 
   payload = { 'api_key': key, 'api_action': 'linode.list' }
   r = requests.post(url, params=payload)
@@ -43,13 +45,15 @@ def list_vms():
   for d in r.json()['DATA']:
 
     if d['LINODEID'] not in ignored_nodes:
-      p2 = { 'api_key': key, 'api_action': 'linode.ip.list', 'LinodeID': d['LINODEID'] }
-      r2 = requests.post(url, params=p2)
+      if not d['LINODEID'] in hosts.keys():
+        p2 = { 'api_key': key, 'api_action': 'linode.ip.list', 'LinodeID': d['LINODEID'] }
+        r2 = requests.post(url, params=p2)
+        hosts[d['LINODEID']] = r2.json()['DATA']
 
       pubip = 'None'
       priip = 'None'
 
-      for d2 in r2.json()['DATA']:
+      for d2 in hosts[d['LINODEID']]:
 
         if d2['ISPUBLIC'] == 1:
           pubip = d2['IPADDRESS']
