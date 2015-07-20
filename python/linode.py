@@ -4,6 +4,9 @@ import sys
 import re
 import requests
 
+datacenters = False
+plans = False
+
 try: 
   f = open('.linodeapi', 'r')
   key = f.read()
@@ -58,28 +61,32 @@ def list_vms():
 
 
 def list_dc():
-
-  payload = { 'api_key': key, 'api_action': 'avail.datacenters' }
-  r = requests.post(url, params=payload)
+  global datacenters
+  if not datacenters:
+    payload = { 'api_key': key, 'api_action': 'avail.datacenters' }
+    r = requests.post(url, params=payload)
+    datacenters = r.json()['DATA']
 
   print "\n\nList of data centers\n"
   print "DC ID:\tLocation:"
   print "------\t---------\n"
 
-  for d in r.json()['DATA']:
+  for d in datacenters:
     print "{}\t{}".format(d['DATACENTERID'], d['LOCATION'])
 
 
 def list_plan():
-
-  payload = { 'api_key': key, 'api_action': 'avail.linodeplans' }
-  r = requests.post(url, params=payload)
+  global plans
+  if not plans:
+    payload = { 'api_key': key, 'api_action': 'avail.linodeplans' }
+    r = requests.post(url, params=payload)
+    plans = r.json()['DATA']
 
   print "\n\nList of Linode plans\n"
   print "Plan:\tPrice:\tCPU:\tRAM:\tStorage:"
   print "-----\t------\t----\t----\t--------\n"
 
-  for d in r.json()['DATA']:
+  for d in plans:
     print "{}\t${}\t{}\t{}\t{}".format(d['PLANID'], str(int(d['PRICE'])), d['CORES'], d['RAM'], d['DISK'])
 
 
