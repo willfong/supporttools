@@ -7,6 +7,7 @@ import requests
 datacenters = False
 plans = False
 hosts = {}
+vmid = {}
 
 try: 
   f = open('.linodeapi', 'r')
@@ -36,15 +37,24 @@ quit - Quit
 
 def list_vms():
   global hosts
+  global vmid
 
   payload = { 'api_key': key, 'api_action': 'linode.list' }
   r = requests.post(url, params=payload)
 
   print "\n\nList of current nodes:"
 
+  vmid = {}
+  counter = 0
+
   for d in r.json()['DATA']:
 
     if d['LINODEID'] not in ignored_nodes:
+
+      # This is the counter to make it easy to delete
+      counter = counter + 1
+      vmid[counter] = d['LINODEID']
+
       if not d['LINODEID'] in hosts.keys():
         p2 = { 'api_key': key, 'api_action': 'linode.ip.list', 'LinodeID': d['LINODEID'] }
         r2 = requests.post(url, params=p2)
@@ -61,8 +71,7 @@ def list_vms():
           priip = d2['IPADDRESS']
 
 
-      print "ID: {} \tName: {}\tPublic IP: {}\tPrivate IP: {}".format( d['LINODEID'], d['LABEL'], pubip, priip)
-
+      print "{}- ID: {} \tName: {}\tPublic IP: {}\tPrivate IP: {}".format( counter, d['LINODEID'], d['LABEL'], pubip, priip)
 
 def list_dc():
   global datacenters
@@ -181,7 +190,11 @@ def wizard_add_server():
 
 def delete_vm(args):
 
-  nodeid = args[0]
+  if not int(args[0]) in vmid.keys():
+    print "Invalid VM ID!"
+    return
+
+  nodeid = vmid[int(args[0])]
 
   batch = '[{"api_action": "linode.shutdown", "LinodeID": '+str(nodeid)+'},'
 
