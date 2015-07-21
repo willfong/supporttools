@@ -67,6 +67,7 @@ def list_vms():
 def list_dc():
   global datacenters
   if not datacenters:
+    print "Getting new list of datacenters from Linode..."
     payload = { 'api_key': key, 'api_action': 'avail.datacenters' }
     r = requests.post(url, params=payload)
     datacenters = r.json()['DATA']
@@ -86,6 +87,7 @@ def list_dc():
 def list_plan():
   global plans
   if not plans:
+    print "Getting new list of plans from Linode..."
     payload = { 'api_key': key, 'api_action': 'avail.linodeplans' }
     r = requests.post(url, params=payload)
     plans = r.json()['DATA']
