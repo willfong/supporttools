@@ -3,6 +3,7 @@
 import sys
 import re
 import requests
+import json
 
 datacenters = False
 plans = False
@@ -188,6 +189,14 @@ def wizard_add_server():
 
 
 
+def call_rest(args):
+  action = args[0]
+  payload = { 'api_key': key, 'api_action': action }
+  r = requests.post(url, params=payload)
+  print json.dumps(r.json()["DATA"], sort_keys=True, indent=2, separators=(',', ': '))
+
+
+
 def delete_vm(args):
 
   if not int(args[0]) in vmid.keys():
@@ -264,6 +273,9 @@ while action != 'quit':
   if action == 'add server':
     wizard_add_server()
 
+  cmd = re.findall( '^rest (.+)$', action )
+  if cmd:
+    call_rest(cmd)
 
   cmd = re.findall( '^delete (\d+)$', action)
   if cmd:
