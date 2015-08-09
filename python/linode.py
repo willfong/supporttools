@@ -156,7 +156,9 @@ def wizard_add_server():
 
   name = raw_input( "\nName of VM? ")
 
-  if not len(name) > 0: print "\nNeed a name!"
+  if not len(name) > 0: 
+    print "\nNeed a name!"
+    return
 
   valid = list_distros()
   distro_id = int( raw_input( "\nWhich distro? ") )
