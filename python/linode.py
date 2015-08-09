@@ -140,8 +140,6 @@ def list_distros():
 
 def wizard_add_server():
 
-  '''One of these days, need to verify that the DC and Plan ID's are valid'''
-
   valid = list_dc()
   dc_id = raw_input( "\nWhich DC? ")
 
