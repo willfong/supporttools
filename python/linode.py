@@ -9,6 +9,12 @@ datacenters = False
 plans = False
 hosts = {}
 vmid = {}
+distros = []
+distros.append({ 'id': 129, 'name': 'CentOS 7' })
+distros.append({ 'id': 127, 'name': 'CentOS 6' })
+distros.append({ 'id': 60, 'name': 'CentOS 5' })
+distros.append({ 'id': 124, 'name': 'Ubuntu 14.04 LTS' })
+
 
 try: 
   f = open('.linodeapi', 'r')
@@ -114,6 +120,24 @@ def list_plan():
 
   return valid
 
+
+
+def list_distros():
+  global distros
+
+  print "\n\nList of distributions\n"
+  print "ID:\tName:"
+  print "---\t---------"
+
+  valid = []
+  for distro in distros:
+    print "{}:\t{}".format(distro["id"], distro["name"])
+    valid.append(distro["id"])
+
+  return valid
+
+
+
 def wizard_add_server():
 
   '''One of these days, need to verify that the DC and Plan ID's are valid'''
@@ -135,6 +159,13 @@ def wizard_add_server():
   name = raw_input( "\nName of VM? ")
 
   if not len(name) > 0: print "\nNeed a name!"
+
+  valid = list_distros()
+  distro_id = int( raw_input( "\nWhich distro? ") )
+
+  if distro_id not in valid:
+    print "\nNot a valid distribution ID"
+    return
 
   payload = { 'api_key': key, 'api_action': 'linode.create', 'DatacenterID': dc_id, 'PlanID': plan_id }
   print "Creating Node..."
@@ -173,7 +204,7 @@ def wizard_add_server():
 
 
   udf = '{"hostname": "' + name + '", "privateip": "' + privateip + '"}'
-  payload = { 'api_key': key, 'api_action': 'linode.disk.createfromstackscript', 'LinodeID': nodeid, 'StackScriptID': 9958, 'StackScriptUDFResponses': udf, 'DistributionID': 127, 'Label': 'Disk', 'Size': 22000, 'rootPass': 'rootPass123' }
+  payload = { 'api_key': key, 'api_action': 'linode.disk.createfromstackscript', 'LinodeID': nodeid, 'StackScriptID': 9958, 'StackScriptUDFResponses': udf, 'DistributionID': distro_id, 'Label': 'Disk', 'Size': 22000, 'rootPass': 'rootPass123' }
   print "Adding Will's Magic..."
   r = requests.post(url, params=payload)
 
