@@ -4,6 +4,7 @@ import sys
 import re
 import requests
 import json
+from subprocess import call
 
 datacenters = False
 plans = False
@@ -228,6 +229,29 @@ def call_rest(args):
 
 
 
+def ssh_vm(args):
+
+  if not int(args[0]) in vmid.keys():
+    print "Invalid VM ID!"
+    return
+
+  nodeid = vmid[int(args[0])]
+
+  pubip = 'None'
+  priip = 'None'
+
+  for d2 in hosts[nodeid]:
+
+    if d2['ISPUBLIC'] == 1:
+      pubip = d2['IPADDRESS']
+    else:
+      priip = d2['IPADDRESS']
+
+  print "Connecting to: {}".format(pubip)  
+  call( "ssh " + pubip, shell=True )
+
+
+
 def delete_vm(args):
 
   if not int(args[0]) in vmid.keys():
@@ -274,7 +298,6 @@ if len(sys.argv) == 2:
         else:
           priip = d2['IPADDRESS']
       
-      from subprocess import call
       print "Connecting to {} ({})".format( nodename, pubip )
       call( "ssh " + pubip, shell=True )
        
@@ -308,9 +331,14 @@ while action != 'quit':
   if cmd:
     call_rest(cmd)
 
+  cmd = re.findall( '^ssh (\d+)$', action)
+  if cmd:
+    ssh_vm(cmd)
+
   cmd = re.findall( '^delete (\d+)$', action)
   if cmd:
     delete_vm(cmd)
+
 
 
   print "\nType 'help' for the help menu.\n"
