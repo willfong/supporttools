@@ -11,4 +11,15 @@ innodb_old_blocks_time=1000
 innodb_purge_threads=1
 innodb_file_per_table=1
 performance_schema=off
+
+# Replication
+
+#server-id=1
+
+#log-bin=binlog
+#log-bin-index=binlog.index
+
+#relay-log=relay
+#relay-log-index=relay.index
+
 EOF
