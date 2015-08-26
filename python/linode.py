@@ -144,21 +144,30 @@ def wizard_add_server():
   valid = list_dc()
   dc_id = raw_input( "\nWhich DC? ")
 
-  if int(dc_id) not in valid:
+  try:
+    if int(dc_id) not in valid:
+      raise ValueError('Invalid ID')
+  except:
     print "\nNot a valid datacenter ID"
     return
 
   valid = list_plan()
   plan_id = raw_input( "\nWhich plan? ")
 
-  if int(plan_id) not in valid: 
+  try:
+    if int(plan_id) not in valid:
+      raise ValueError('Invalid ID')
+  except:
     print "\nNot a valid plan ID"
     return
 
   valid = list_distros()
-  distro_id = int( raw_input( "\nWhich distro? ") )
+  distro_id = raw_input( "\nWhich distro? ")
 
-  if distro_id not in valid:
+  try:
+    if int(distro_id) not in valid:
+      raise ValueError('Invalid ID')
+  except:
     print "\nNot a valid distribution ID"
     return
 
