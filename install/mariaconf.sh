@@ -22,4 +22,9 @@ performance_schema=off
 #relay-log=relay
 #relay-log-index=relay.index
 
+# CREATE USER 'repl'@'%';
+# GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%';
+
+# CHANGE MASTER TO MASTER_HOST='192.168.0.0', MASTER_USER='repl', MASTER_LOG_FILE='binlog.000001', MASTER_LOG_POS=107;
+
 EOF
