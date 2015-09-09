@@ -79,7 +79,7 @@ def list_vms():
           priip = d2['IPADDRESS']
 
 
-      print "{}- ID: {} \tName: {}\tPublic IP: {}\tPrivate IP: {}".format( counter, d['LINODEID'], d['LABEL'], pubip, priip)
+      print "{}- {} ({})\tIP: {} ({})".format( counter, d['LABEL'], d['LINODEID'], pubip, priip)
 
 def list_dc():
   global datacenters
