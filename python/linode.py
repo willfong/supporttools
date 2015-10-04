@@ -3,11 +3,19 @@
 import sys
 import re
 import requests
+import json
+from subprocess import call
 
 datacenters = False
 plans = False
 hosts = {}
 vmid = {}
+distros = []
+distros.append({ 'id': 129, 'name': 'CentOS 7' })
+distros.append({ 'id': 127, 'name': 'CentOS 6' })
+distros.append({ 'id': 60, 'name': 'CentOS 5' })
+distros.append({ 'id': 124, 'name': 'Ubuntu 14.04 LTS' })
+
 
 try: 
   f = open('.linodeapi', 'r')
@@ -71,7 +79,7 @@ def list_vms():
           priip = d2['IPADDRESS']
 
 
-      print "{}- ID: {} \tName: {}\tPublic IP: {}\tPrivate IP: {}".format( counter, d['LINODEID'], d['LABEL'], pubip, priip)
+      print "{}- {} ({})\tIP: {} ({})".format( counter, d['LABEL'], d['LINODEID'], pubip, priip)
 
 def list_dc():
   global datacenters
@@ -113,27 +121,61 @@ def list_plan():
 
   return valid
 
-def wizard_add_server():
 
-  '''One of these days, need to verify that the DC and Plan ID's are valid'''
+
+def list_distros():
+  global distros
+
+  print "\n\nList of distributions\n"
+  print "ID:\tName:"
+  print "---\t---------"
+
+  valid = []
+  for distro in distros:
+    print "{}:\t{}".format(distro["id"], distro["name"])
+    valid.append(distro["id"])
+
+  return valid
+
+
+
+def wizard_add_server():
 
   valid = list_dc()
   dc_id = raw_input( "\nWhich DC? ")
 
-  if int(dc_id) not in valid:
+  try:
+    if int(dc_id) not in valid:
+      raise ValueError('Invalid ID')
+  except:
     print "\nNot a valid datacenter ID"
     return
 
   valid = list_plan()
   plan_id = raw_input( "\nWhich plan? ")
 
-  if int(plan_id) not in valid: 
+  try:
+    if int(plan_id) not in valid:
+      raise ValueError('Invalid ID')
+  except:
     print "\nNot a valid plan ID"
+    return
+
+  valid = list_distros()
+  distro_id = raw_input( "\nWhich distro? ")
+
+  try:
+    if int(distro_id) not in valid:
+      raise ValueError('Invalid ID')
+  except:
+    print "\nNot a valid distribution ID"
     return
 
   name = raw_input( "\nName of VM? ")
 
-  if not len(name) > 0: print "\nNeed a name!"
+  if not len(name) > 0: 
+    print "\nNeed a name!"
+    return
 
   payload = { 'api_key': key, 'api_action': 'linode.create', 'DatacenterID': dc_id, 'PlanID': plan_id }
   print "Creating Node..."
@@ -172,7 +214,7 @@ def wizard_add_server():
 
 
   udf = '{"hostname": "' + name + '", "privateip": "' + privateip + '"}'
-  payload = { 'api_key': key, 'api_action': 'linode.disk.createfromstackscript', 'LinodeID': nodeid, 'StackScriptID': 9958, 'StackScriptUDFResponses': udf, 'DistributionID': 127, 'Label': 'Disk', 'Size': 22000, 'rootPass': 'rootPass123' }
+  payload = { 'api_key': key, 'api_action': 'linode.disk.createfromstackscript', 'LinodeID': nodeid, 'StackScriptID': 9958, 'StackScriptUDFResponses': udf, 'DistributionID': distro_id, 'Label': 'Disk', 'Size': 22000, 'rootPass': 'rootPass123' }
   print "Adding Will's Magic..."
   r = requests.post(url, params=payload)
 
@@ -185,6 +227,37 @@ def wizard_add_server():
   payload = { 'api_key': key, 'api_action': 'linode.boot', 'LinodeID': nodeid }
   print "Booting Node..."
   r = requests.post(url, params=payload)
+
+
+
+def call_rest(args):
+  action = args[0]
+  payload = { 'api_key': key, 'api_action': action }
+  r = requests.post(url, params=payload)
+  print json.dumps(r.json()["DATA"], sort_keys=True, indent=2, separators=(',', ': '))
+
+
+
+def ssh_vm(args):
+
+  if not int(args[0]) in vmid.keys():
+    print "Invalid VM ID!"
+    return
+
+  nodeid = vmid[int(args[0])]
+
+  pubip = 'None'
+  priip = 'None'
+
+  for d2 in hosts[nodeid]:
+
+    if d2['ISPUBLIC'] == 1:
+      pubip = d2['IPADDRESS']
+    else:
+      priip = d2['IPADDRESS']
+
+  print "Connecting to: {}".format(pubip)  
+  call( "ssh " + pubip, shell=True )
 
 
 
@@ -234,7 +307,6 @@ if len(sys.argv) == 2:
         else:
           priip = d2['IPADDRESS']
       
-      from subprocess import call
       print "Connecting to {} ({})".format( nodename, pubip )
       call( "ssh " + pubip, shell=True )
        
@@ -264,10 +336,18 @@ while action != 'quit':
   if action == 'add server':
     wizard_add_server()
 
+  cmd = re.findall( '^rest (.+)$', action )
+  if cmd:
+    call_rest(cmd)
+
+  cmd = re.findall( '^ssh (\d+)$', action)
+  if cmd:
+    ssh_vm(cmd)
 
   cmd = re.findall( '^delete (\d+)$', action)
   if cmd:
     delete_vm(cmd)
+
 
 
   print "\nType 'help' for the help menu.\n"
