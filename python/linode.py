@@ -37,10 +37,22 @@ list - List nodes
 
 delete - Delete VM node
 
+transfer - Network Transfer Pool Quota
 help - This help menu
 quit - Quit
 
 '''
+
+
+def transfer():
+  payload = { 'api_key': key, 'api_action': 'account.info' }
+  r = requests.post(url, params=payload)
+
+  data_used = r.json()['DATA']['TRANSFER_USED']
+  data_total = r.json()['DATA']['TRANSFER_POOL'] 
+
+  print "\nTotal: {}\tUsed: {}\n".format(data_total, data_used)
+
 
 
 def list_vms():
@@ -323,6 +335,9 @@ while action != 'quit':
 
   if action == 'help':
     help()
+
+  if action == 'transfer':
+    transfer()
 
   if action == 'list':
     list_vms()
