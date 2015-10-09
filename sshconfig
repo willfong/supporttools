@@ -1,5 +1,12 @@
 # Linode SG
 
+
+Host 45.118.*.*
+  User root
+  ChallengeResponseAuthentication no
+  StrictHostKeyChecking no
+  UserKnownHostsFile=/dev/null
+
 Host 139.162.*.*
   User root
   ChallengeResponseAuthentication no
