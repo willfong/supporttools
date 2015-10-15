@@ -8,7 +8,7 @@ GRANT ALL ON *.* TO 'mha'@'%' IDENTIFIED BY 'mha';
 Sample Config:
 "
 
-cat <<EOF > /etc/my.cnf
+cat <<EOF > /etc/app1.cnf
 [server default]
 # mysql user and password
 user=mha
