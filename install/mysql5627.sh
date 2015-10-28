@@ -1,10 +1,12 @@
+URL=http://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.27-linux-glibc2.5-x86_64.tar.gz
+
 yum -y install libaio
 groupadd mysql
 useradd -r -g mysql mysql
 cd /usr/local
-wget http://downloads.mysql.com/archives/get/file/mysql-5.5.15-linux2.6-x86_64.tar.gz
+wget $URL
 tar xvzf mysql*.tar.gz
-ln -s mysql-5.5.15-linux2.6-x86_64 mysql
+ls -d mysql*/ | xargs -I dirname ln -s dirname mysql
 cd mysql
 chown -R mysql .
 chgrp -R mysql .
