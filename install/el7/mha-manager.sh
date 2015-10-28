@@ -6,6 +6,9 @@ MHA needs a user to connect to the servers as. Something like:
 GRANT ALL ON *.* TO 'mha'@'%' IDENTIFIED BY 'mha';
 
 Sample Config:
+"
+
+cat <<EOF > /etc/app1.cnf
 [server default]
 # mysql user and password
 user=mha
@@ -18,6 +21,9 @@ hostname=host1
 [server2]
 hostname=host2
 
+EOF
+
+echo "
 Run Checks:
 masterha_check_ssh --conf=/etc/app1.cnf
 masterha_check_repl --conf=/etc/app1.cnf
