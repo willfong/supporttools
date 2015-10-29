@@ -250,7 +250,7 @@ def call_rest(args):
 
 
 
-def ssh_vm(args):
+def ssh_vm(args, cmd):
 
   if not int(args[0]) in vmid.keys():
     print "Invalid VM ID!"
@@ -269,7 +269,7 @@ def ssh_vm(args):
       priip = d2['IPADDRESS']
 
   print "Connecting to: {}".format(pubip)  
-  call( "ssh " + pubip, shell=True )
+  call( cmd + " " + pubip, shell=True )
 
 
 
@@ -357,7 +357,11 @@ while action != 'quit':
 
   cmd = re.findall( '^ssh (\d+)$', action)
   if cmd:
-    ssh_vm(cmd)
+    ssh_vm(cmd, 'ssh')
+
+  cmd = re.findall( '^mosh (\d+)$', action)
+  if cmd:
+    ssh_vm(cmd, 'mosh')
 
   cmd = re.findall( '^delete (\d+)$', action)
   if cmd:
