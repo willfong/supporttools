@@ -19,4 +19,3 @@ chown -R mysql /var/lib/mysql
 echo "
 You probably want to run: mysqlconf.sh
 Start with /usr/local/mysql/bin/mysqld_safe --user=mysql &"
-"
