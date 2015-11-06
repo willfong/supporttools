@@ -1,4 +1,4 @@
-cat <<EOF > /etc/my.cnf.d/server.cnf
+cat <<EOF > /etc/my.cnf
 [mysqld]
 log_error=/var/lib/mysql/mysql.err
 
