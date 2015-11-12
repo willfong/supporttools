@@ -8,6 +8,7 @@ from subprocess import call
 
 datacenters = False
 plans = False
+planstorage = {}
 hosts = {}
 vmid = {}
 distros = []
@@ -130,6 +131,7 @@ def list_plan():
   for d in plans:
     print "{}\t${}\t{}\t{}\t{}".format(d['PLANID'], str(int(d['PRICE'])), d['CORES'], d['RAM'], d['DISK'])
     valid.append(d['PLANID'])
+    planstorage[d['PLANID']] = d['DISK']
 
   return valid
 
@@ -172,6 +174,7 @@ def wizard_add_server():
   except:
     print "\nNot a valid plan ID"
     return
+  disksize = (int(planstorage[int(plan_id)]) - 2)*1000
 
   valid = list_distros()
   distro_id = raw_input( "\nWhich distro? ")
@@ -226,7 +229,7 @@ def wizard_add_server():
 
 
   udf = '{"hostname": "' + name + '", "privateip": "' + privateip + '"}'
-  payload = { 'api_key': key, 'api_action': 'linode.disk.createfromstackscript', 'LinodeID': nodeid, 'StackScriptID': 9958, 'StackScriptUDFResponses': udf, 'DistributionID': distro_id, 'Label': 'Disk', 'Size': 22000, 'rootPass': 'rootPass123' }
+  payload = { 'api_key': key, 'api_action': 'linode.disk.createfromstackscript', 'LinodeID': nodeid, 'StackScriptID': 9958, 'StackScriptUDFResponses': udf, 'DistributionID': distro_id, 'Label': 'Disk', 'Size': disksize, 'rootPass': 'rootPass123' }
   print "Adding Will's Magic..."
   r = requests.post(url, params=payload)
 
