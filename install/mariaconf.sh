@@ -1,8 +1,12 @@
 cat <<EOF > /etc/my.cnf
+[mysql]
+socket=/var/lib/mysql/mysql.sock
+
 [mysqld]
 log_error=/var/lib/mysql/mysql.err
 datadir=/var/lib/mysql
 pid_file=/var/lib/mysql/mysql.pid
+socket=/var/lib/mysql/mysql.sock
 
 innodb_buffer_pool_size=256M
 innodb_log_file_size=256M
