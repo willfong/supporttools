@@ -15,5 +15,23 @@ innodb_purge_threads=1
 innodb_file_per_table=1
 
 performance_schema=off
+
+
+# Replication
+
+#server-id=1
+
+#log-bin=binlog
+#log-bin-index=binlog.index
+
+#relay-log=relay
+#relay-log-index=relay.index
+
+# CREATE USER 'repl'@'%';
+# GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%';
+
+# CHANGE MASTER TO MASTER_HOST='192.168.0.0', MASTER_USER='repl', MASTER_LOG_FILE='binlog.000001', MASTER_LOG_POS=107;
+
+
 EOF
 
