@@ -22,7 +22,7 @@ sleep $SLEEP
 
 while true
 do
-    OUT=`mysql -e 'SHOW GLOBAL STATUS; SHOW SLAVE STATUS' | grep 'Com_insert\W\|Com_update\W\|Com_delete\W\|Seconds_Behind_Master'`
+    OUT=`mysql -e 'SHOW GLOBAL STATUS; SHOW SLAVE STATUS\G' | grep 'Com_insert\W\|Com_update\W\|Com_delete\W\|Seconds_Behind_Master'`
 
     # TODO: Isn't there a better way to do this??? 
     DEL=`echo $OUT|cut -d " " -f 2`
