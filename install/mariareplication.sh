@@ -80,20 +80,37 @@ relay-log-index=relay.index
 
 EOF
 
-alias mym="/usr/local/mysql/bin/mysql -S/master/mysql.sock"
-alias mys="/usr/local/mysql/bin/mysql -S/slave/mysql.sock"
 
 /usr/local/mysql/bin/mysqld --defaults-file=/etc/my-master.cnf &
-/usr/local/mysql/bin/mysqld --defaults-file=/etc/my-master.cnf &
 
-mym -e "CREATE USER 'r'@'localhost'"
-mys -e "GRANT REPLICATION SLAVE ON *.* TO 'r'@'localhost'"
+tail -F /master/mysql.err | \
+while read line ; do
+  echo "$line" | grep "ready for connections"
+  if [ $? = 0 ]
+  then
+    /usr/local/mysql/bin/mysql -S/master/mysql.sock -e "CREATE USER 'r'@'localhost'"
+    /usr/local/mysql/bin/mysql -S/master/mysql.sock -e "GRANT REPLICATION SLAVE ON *.* TO 'r'@'localhost'"
+    pkill -P $$ tail
+  fi
+done
 
 
-FILENAME="$(mym -e 'SHOW MASTER STATUS\G'|grep 'File:' | cut -d ':' -f 2|awk '{$1=$1};1')"
-POS="$(mym -e 'SHOW MASTER STATUS\G'|grep 'Position:' | cut -d ':' -f 2|awk '{$1=$1};1')"
+/usr/local/mysql/bin/mysqld --defaults-file=/etc/my-slave.cnf &
 
-mys -e "CHANGE MASTER TO MASTER_HOST='127.0.0.1', MASTER_PORT=3307, MASTER_USER='r', MASTER_LOG_FILE='${FILENAME}', MASTER_LOG_POS=${POS}"
-mys -e "START SLAVE"
+tail -F /slave/mysql.err | \
+while read line ; do 
+  echo "$line" | grep "ready for connections"
+  if [ $? = 0 ]
+  then
+    FILENAME="$(/usr/local/mysql/bin/mysql -S/master/mysql.sock -e 'SHOW MASTER STATUS\G'|grep 'File:' | cut -d ':' -f 2|awk '{$1=$1};1')"
+    POS="$(/usr/local/mysql/bin/mysql -S/master/mysql.sock -e 'SHOW MASTER STATUS\G'|grep 'Position:' | cut -d ':' -f 2|awk '{$1=$1};1')"
+    echo "Running: CHANGE MASTER TO MASTER_HOST='127.0.0.1', MASTER_PORT=3307, MASTER_USER='r', MASTER_LOG_FILE='${FILENAME}', MASTER_LOG_POS=${POS}"
+    /usr/local/mysql/bin/mysql -S/slave/mysql.sock -e "CHANGE MASTER TO MASTER_HOST='127.0.0.1', MASTER_PORT=3307, MASTER_USER='r', MASTER_LOG_FILE='${FILENAME}', MASTER_LOG_POS=${POS}"
+    echo "Running: START SLAVE"
+    /usr/local/mysql/bin/mysql -S/slave/mysql.sock -e "START SLAVE"
+    pkill -P $$ tail
+  fi
+done
+
 
 
