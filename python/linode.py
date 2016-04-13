@@ -374,7 +374,7 @@ while action != 'quit':
 
   print "\nType 'help' for the help menu.\n"
 
-  action = raw_input( "Yes, me lord? ")
+  action = raw_input( "> ")
 
 
 
