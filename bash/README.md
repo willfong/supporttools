@@ -4,7 +4,7 @@ Just my collection of bash scripts...
 
 ----
 
-### replicat.sh
+### replication.sh
 
 `Usage: ./replication.sh <sleep>`
 
