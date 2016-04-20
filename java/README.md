@@ -15,5 +15,5 @@ Just a few Java programs to run complete application-style tests
 
 ## Run Java
 
-`java -cp .:maria.jar WaitTimeout`
+`java -cp .:maria.jar WaitTimeout <waitTimeout> <sleepTime>`
 
