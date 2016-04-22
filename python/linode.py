@@ -330,7 +330,7 @@ if len(sys.argv) == 2:
 
 action = 'list' # default action when we first start
 
-while action != 'quit':
+while action != 'quit' and action != 'exit':
 
   if action == '':
     # Make a default if someone hits enter
