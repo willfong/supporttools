@@ -136,7 +136,7 @@ printlog("All done. Thanks for playing!");
 
 sub printlog {
   my $logline=shift;
-  my $ts = strftime "%F %T", localtime $^T;
+  my $ts = strftime("%Y-%m-%d %H:%M:%S", localtime(time));
   print "[$ts] $logline\n";
 }
 
