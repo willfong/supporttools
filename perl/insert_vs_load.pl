@@ -12,7 +12,7 @@ use warnings;
 use DBI;
 use POSIX;
 #use Time::HiRes qw(time);
-#use POSIX qw( strftime );
+use POSIX qw( strftime );
 
 # Check input params
 my $num_args = $#ARGV + 1;
@@ -43,10 +43,10 @@ $conn->do("CREATE TABLE $temptable ( id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
 my $pq = $conn->prepare( "INSERT INTO $temptable ( a, b, c, d ) VALUES ( ?, ?, ?, ? )" );
 
 
-for (my $x = 0; $x < $iterations; $x++){
+for (my $x = 1; $x <= $iterations; $x++){
 
   my $totalrows = $batchsize * $x;
-  printlog("Iteration: " . ($x+1));
+  printlog("Iteration: " . $x);
   printlog("\tCurrent row count: $totalrows");
 
 
@@ -74,6 +74,9 @@ for (my $x = 0; $x < $iterations; $x++){
   $conn->do("COMMIT");
   my $end = time;
   my $total_single = $end - $start;
+  if ($total_single < 1) {
+    $total_single = 1;
+  }
   my $qps = sprintf("%.1f", $batchsize / $total_single);
   printlog("\tCompleted $batchsize in $total_single seconds ($qps rows per second)");
 
@@ -99,7 +102,7 @@ for (my $x = 0; $x < $iterations; $x++){
       $values = '';
     }
   }
-  if ($x > 0) {
+  if ($counter > 0) {
     printlog("\t\tInserting $counter rows...");
     chop $values;
     $conn->do($query_prefix . $values);
@@ -107,6 +110,9 @@ for (my $x = 0; $x < $iterations; $x++){
   $conn->do("COMMIT");
   $end = time;
   my $total_multi = $end - $start;
+  if ($total_multi < 1) {
+    $total_multi = 1;
+  }
   $qps = sprintf("%.1f", $batchsize / $total_multi);
   printlog("\tCompleted $batchsize in $total_multi seconds ($qps rows per second)");
 
@@ -116,6 +122,9 @@ for (my $x = 0; $x < $iterations; $x++){
   $conn->do("LOAD DATA LOCAL INFILE '$tempfile' INTO TABLE $temptable ( a, b, c, d )");
   $end = time;
   my $total_ldi = $end - $start;
+  if ($total_ldi < 1) {
+    $total_ldi = 1;
+  }
   $qps = sprintf("%.1f", $batchsize / $total_ldi);
   printlog("\tCompleted $batchsize in $total_ldi seconds ($qps rows per second)");
 
@@ -127,10 +136,8 @@ printlog("All done. Thanks for playing!");
 
 sub printlog {
   my $logline=shift;
-  my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
-  $year += 1900;
-  $mon += 1;
-  print "[$year-$mon-$mday $hour:$min:$sec] $logline\n";
+  my $ts = strftime "%F %T", localtime $^T;
+  print "[$ts] $logline\n";
 }
 
 sub generate_random_string {
