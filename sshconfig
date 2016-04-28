@@ -1,3 +1,11 @@
+# Local Overwrites
+
+Host pi
+  User pi
+  ChallengeResponseAuthentication no
+  StrictHostKeyChecking no
+  UserKnownHostsFile=/dev/null
+
 # Linode SG
 
 
