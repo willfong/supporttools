@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-my $resultsfile = 'results.txt';
+my $resultsfile = 'results-'. strftime("%Y%m%d%H%M%S", localtime(time)) . '.txt';
 my $temptable = 'insertvsload';
 my $tempfile = '/tmp/insertvsload_safe_to_delete.txt';
 
@@ -33,7 +33,7 @@ my $insertsize = $ARGV[6];
 printlog("The INSERT vs LOAD DATA INFILE Challenge!");
 printlog("Logging results to: $resultsfile");
 open(my $rf, '>', $resultsfile);
-print $rf "rows,single,multi,ldi\n";
+select((select($rf), $|=1)[0]); # Perl blackmagic for turning off write buffering
 
 
 printlog("Connecting to the database...");
@@ -41,6 +41,32 @@ my $conn = DBI->connect("dbi:mysql:mysql_local_infile=1;dbname=$hostdb;host=$hos
 $conn->do("DROP TABLE IF EXISTS $temptable");
 $conn->do("CREATE TABLE $temptable ( id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT, a INT UNSIGNED, b INT UNSIGNED, c VARCHAR(200), d VARCHAR(200), INDEX (b), INDEX (c,d) )");
 my $pq = $conn->prepare( "INSERT INTO $temptable ( a, b, c, d ) VALUES ( ?, ?, ?, ? )" );
+
+
+# Let's start!
+
+my $completecmd = join " ", $0, @ARGV;
+my $completerows = $iterations * $batchsize * 3;
+print $rf <<EOF;
+# --------------------------------------------------------
+# INSERT vs LOAD DATA INFILE Benchmark Results
+# --------------------------------------------------------
+# Benchmark executed with:
+#   $completecmd
+#
+# Test Criteria:
+#   Total rows inserted:    $completerows
+#   Iterations:             $iterations
+#   Rows inserted per test: $batchsize
+#   Multi-Row INSERT size:  $insertsize
+#
+# --------------------------------------------------------
+# Column 1: Number of rows inserted
+# Column 2: Time for single INSERT
+# Column 3: Time for multi-row INSERT
+# Column 4: Time for LOAD DATA INFILE
+# --------------------------------------------------------
+EOF
 
 
 for (my $x = 1; $x <= $iterations; $x++){
