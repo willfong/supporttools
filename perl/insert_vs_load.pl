@@ -36,7 +36,7 @@ open(my $rf, '>', $resultsfile);
 select((select($rf), $|=1)[0]); # Perl blackmagic for turning off write buffering
 
 
-printlog("Connecting to the database...");
+printlog("Connecting to the database and preparing things...");
 my $conn = DBI->connect("dbi:mysql:mysql_local_infile=1;dbname=$hostdb;host=$hostip;port=3306", "$hostuser", "$hostpass");
 $conn->do("DROP TABLE IF EXISTS $temptable");
 $conn->do("CREATE TABLE $temptable ( id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT, a INT UNSIGNED, b INT UNSIGNED, c VARCHAR(200), d VARCHAR(200), INDEX (b), INDEX (c,d) )");
@@ -48,9 +48,9 @@ my $pq = $conn->prepare( "INSERT INTO $temptable ( a, b, c, d ) VALUES ( ?, ?, ?
 my $completecmd = join " ", $0, @ARGV;
 my $completerows = $iterations * $batchsize * 3;
 print $rf <<EOF;
-# --------------------------------------------------------
+# ------------------------------------------------------------------------
 # INSERT vs LOAD DATA INFILE Benchmark Results
-# --------------------------------------------------------
+# ------------------------------------------------------------------------
 # Benchmark executed with:
 #   $completecmd
 #
@@ -60,12 +60,12 @@ print $rf <<EOF;
 #   Rows inserted per test: $batchsize
 #   Multi-Row INSERT size:  $insertsize
 #
-# --------------------------------------------------------
+# ------------------------------------------------------------------------
 # Column 1: Number of rows inserted
 # Column 2: Time for single INSERT
 # Column 3: Time for multi-row INSERT
 # Column 4: Time for LOAD DATA INFILE
-# --------------------------------------------------------
+# ------------------------------------------------------------------------
 EOF
 
 
@@ -110,28 +110,31 @@ for (my $x = 1; $x <= $iterations; $x++){
   printlog("\tStarting Multi-Row INSERT benchmark...");
   $start = time;
   open($fh, '<', $tempfile);
-  my $query_prefix = "INSERT INTO $temptable ( a, b, c, d ) VALUES ";
+  my $query_prefix = "INSERT INTO $temptable (a,b,c,d) VALUES ";
   my $values = '';
   my $counter = 0;
   $conn->do("BEGIN");
   while(my $line = <$fh>) {
     chomp $line;
     my ($a, $b, $c, $d) = split(/(?<!,)\t/, $line);
-    $values .= "($a, $b, '$c', '$d'),";
+    $values .= "($a,$b,'$c','$d'),";
     $counter++;
     if ($counter == $insertsize) {
-      my $insertlength = length($values);
-      printlog("\t\tInserting $insertsize rows / $insertlength bytes...");
       chop $values;
-      $conn->do($query_prefix . $values);
+      my $q = $query_prefix . $values;
+      my $insertlength = length($q);
+      printlog("\t\tInserting $insertsize rows / $insertlength bytes...");
+      $conn->do($q);
       $counter = 0;
       $values = '';
     }
   }
   if ($counter > 0) {
-    printlog("\t\tInserting $counter rows...");
     chop $values;
-    $conn->do($query_prefix . $values);
+    my $q = $query_prefix . $values;
+    my $insertlength = length($q);
+    printlog("\t\tInserting $counter rows / $insertlength bytes...");
+    $conn->do($q);
   }
   $conn->do("COMMIT");
   $end = time;
@@ -157,7 +160,9 @@ for (my $x = 1; $x <= $iterations; $x++){
   print $rf $batchsize*$x*3 . ",$total_single,$total_multi,$total_ldi\n";
 }
 
-
+printlog("Cleaning up...");
+unlink $tempfile;
+$conn->do("DROP TABLE IF EXISTS $temptable");
 printlog("All done. Thanks for playing!");
 
 sub printlog {
