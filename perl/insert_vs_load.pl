@@ -59,9 +59,6 @@ if ($insertsize > 350000) {
 
 
 printlog("The INSERT vs LOAD DATA INFILE Challenge!");
-printlog("Logging results to: $resultsfile");
-open(my $rf, '>', $resultsfile);
-select((select($rf), $|=1)[0]); # Perl blackmagic for turning off write buffering
 
 
 printlog("Connecting to the database and preparing things...");
@@ -72,7 +69,9 @@ my $pq = $conn->prepare( "INSERT INTO $temptable ( a, b, c, d ) VALUES ( ?, ?, ?
 
 
 # Let's start!
-
+printlog("Logging results to: $resultsfile");
+open(my $rf, '>', $resultsfile);
+select((select($rf), $|=1)[0]); # Perl blackmagic for turning off write buffering
 my $completecmd = join " ", $0, @ARGV;
 my $completerows = $iterations * $batchsize * 3;
 print $rf <<EOF;
@@ -90,9 +89,12 @@ print $rf <<EOF;
 #
 # ------------------------------------------------------------------------
 # Column 1: Number of rows inserted
-# Column 2: Time for single INSERT
-# Column 3: Time for multi-row INSERT
-# Column 4: Time for LOAD DATA INFILE
+# Column 2: Single-Row INSERT load time
+# Column 3: Single-Row INSERT rows per second
+# Column 4: Multi-Row INSERT load time
+# Column 5: Multi-Row INSERT rows per second
+# Column 6: LOAD DATA INFILE load time
+# Column 7: LOAD DATA INFILE rows per second
 # ------------------------------------------------------------------------
 EOF
 
@@ -131,8 +133,8 @@ for (my $x = 1; $x <= $iterations; $x++){
   if ($total_single < 1) {
     $total_single = 1;
   }
-  my $qps = sprintf("%.1f", $batchsize / $total_single);
-  printlog("\tCompleted $batchsize in $total_single seconds ($qps rows per second)");
+  my $qps_single = sprintf("%.1f", $batchsize / $total_single);
+  printlog("\tCompleted $batchsize in $total_single seconds ($qps_single rows per second)");
 
 
   printlog("\tStarting Multi-Row INSERT benchmark...");
@@ -170,8 +172,8 @@ for (my $x = 1; $x <= $iterations; $x++){
   if ($total_multi < 1) {
     $total_multi = 1;
   }
-  $qps = sprintf("%.1f", $batchsize / $total_multi);
-  printlog("\tCompleted $batchsize in $total_multi seconds ($qps rows per second)");
+  my $qps_multi = sprintf("%.1f", $batchsize / $total_multi);
+  printlog("\tCompleted $batchsize in $total_multi seconds ($qps_multi rows per second)");
 
 
   printlog("\tStarting LOAD DATA INFILE benchmark...");
@@ -182,10 +184,10 @@ for (my $x = 1; $x <= $iterations; $x++){
   if ($total_ldi < 1) {
     $total_ldi = 1;
   }
-  $qps = sprintf("%.1f", $batchsize / $total_ldi);
-  printlog("\tCompleted $batchsize in $total_ldi seconds ($qps rows per second)");
+  my $qps_ldi = sprintf("%.1f", $batchsize / $total_ldi);
+  printlog("\tCompleted $batchsize in $total_ldi seconds ($qps_ldi rows per second)");
 
-  print $rf $batchsize*$x*3 . ",$total_single,$total_multi,$total_ldi\n";
+  print $rf $batchsize*$x*3 . ",$total_single,$qps_single,$total_multi,$qps_multi,$total_ldi,$qps_ldi\n";
 }
 
 printlog("Cleaning up...");
