@@ -45,8 +45,8 @@ my $pq = $conn->prepare( "INSERT INTO $temptable ( a, b, c, d ) VALUES ( ?, ?, ?
 
 for (my $x = 1; $x <= $iterations; $x++){
 
-  my $totalrows = $batchsize * $x;
   printlog("Iteration: " . $x);
+  my $totalrows = $batchsize * ($x - 1) * 3;
   printlog("\tCurrent row count: $totalrows");
 
 
@@ -128,7 +128,7 @@ for (my $x = 1; $x <= $iterations; $x++){
   $qps = sprintf("%.1f", $batchsize / $total_ldi);
   printlog("\tCompleted $batchsize in $total_ldi seconds ($qps rows per second)");
 
-  print $rf $batchsize*$x . ",$total_single,$total_multi,$total_ldi\n";
+  print $rf $batchsize*$x*3 . ",$total_single,$total_multi,$total_ldi\n";
 }
 
 
