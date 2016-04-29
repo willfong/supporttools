@@ -1,24 +1,34 @@
 #!/usr/bin/perl
 
+use strict;
+use warnings;
+use DBI;
+use POSIX;
+use POSIX qw( strftime );
+
+
 my $resultsfile = 'results-'. strftime("%Y%m%d%H%M%S", localtime(time)) . '.txt';
 my $temptable = 'insertvsload';
 my $tempfile = '/tmp/insertvsload_safe_to_delete.txt';
 
-# ----------------------------------------------------------------------------
-
-use strict;
-use warnings;
-
-use DBI;
-use POSIX;
-#use Time::HiRes qw(time);
-use POSIX qw( strftime );
 
 # Check input params
+my $fn = __FILE__;
+my $usage = <<EOF;
+
+
+Usage: $fn <host_ip> <host_user> <host_password> <host_db> <iterations> <batch_size> <insert_size>
+
+
+Recommendations:
+  Batch size:  2000000
+  Insert size: 200000
+
+EOF
+
 my $num_args = $#ARGV + 1;
 if ($num_args != 7) {
-  my $fn = __FILE__;
-  print "\nUsage: $fn <host_ip> <host_user> <host_password> <host_db> <iterations> <batch_size> <insert_size>\n";
+  print $usage;
   exit;
 }
 my $hostip = $ARGV[0];
@@ -28,6 +38,24 @@ my $hostdb = $ARGV[3];
 my $iterations = $ARGV[4];
 my $batchsize = $ARGV[5];
 my $insertsize = $ARGV[6];
+
+
+# Size Check
+if ($batchsize > 2400000) {
+  print $usage;
+  print "\nBatch sizes greater than 2.4M creates a file over 1GB.\nThe MySQL client protocol limits packets to 1GB.\n\n";
+  exit;
+}
+if ($insertsize > 350000) {
+  print $usage;
+  print "\nInsert size needs to be less than 350000.\n\n";
+  exit;
+}
+
+# Todo
+# check disk space
+# check max_allowed_packet
+# check innodb log file size for rotation
 
 
 printlog("The INSERT vs LOAD DATA INFILE Challenge!");
