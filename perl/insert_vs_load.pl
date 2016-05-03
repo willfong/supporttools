@@ -53,7 +53,8 @@ if ($insertsize > 350000) {
 }
 
 # Todo
-# check disk space
+# check disk space for temp file
+# check disk space for data dir
 # check max_allowed_packet
 # check innodb log file size for rotation
 
