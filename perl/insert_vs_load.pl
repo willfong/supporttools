@@ -94,11 +94,11 @@ print $rf <<EOF;
 #
 # ------------------------------------------------------------------------
 # Column 1: Number of rows inserted
-# Column 2: Single-Row INSERT load time
+# Column 2: Single-Row INSERT load time in seconds
 # Column 3: Single-Row INSERT rows per second
-# Column 4: Multi-Row INSERT load time
+# Column 4: Multi-Row INSERT load time in seconds
 # Column 5: Multi-Row INSERT rows per second
-# Column 6: LOAD DATA INFILE load time
+# Column 6: LOAD DATA INFILE load time in seconds
 # Column 7: LOAD DATA INFILE rows per second
 # ------------------------------------------------------------------------
 EOF
