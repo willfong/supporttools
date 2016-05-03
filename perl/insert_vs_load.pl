@@ -64,9 +64,13 @@ printlog("The INSERT vs LOAD DATA INFILE Challenge!");
 
 printlog("Connecting to the database and preparing things...");
 my $conn = DBI->connect("dbi:mysql:mysql_local_infile=1;dbname=$hostdb;host=$hostip;port=3306", "$hostuser", "$hostpass");
-$conn->do("DROP TABLE IF EXISTS $temptable");
-$conn->do("CREATE TABLE $temptable ( id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT, a INT UNSIGNED, b INT UNSIGNED, c VARCHAR(200), d VARCHAR(200), INDEX (b), INDEX (c,d) )");
-my $pq = $conn->prepare( "INSERT INTO $temptable ( a, b, c, d ) VALUES ( ?, ?, ?, ? )" );
+$conn->do("DROP TABLE IF EXISTS ".$temptable."_single");
+$conn->do("DROP TABLE IF EXISTS ".$temptable."_multi");
+$conn->do("DROP TABLE IF EXISTS ".$temptable."_ldi");
+$conn->do("CREATE TABLE ".$temptable."_single ( id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT, a INT UNSIGNED, b INT UNSIGNED, c VARCHAR(200), d VARCHAR(200), INDEX (b), INDEX (c,d) )");
+$conn->do("CREATE TABLE ".$temptable."_multi ( id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT, a INT UNSIGNED, b INT UNSIGNED, c VARCHAR(200), d VARCHAR(200), INDEX (b), INDEX (c,d) )");
+$conn->do("CREATE TABLE ".$temptable."_ldi ( id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT, a INT UNSIGNED, b INT UNSIGNED, c VARCHAR(200), d VARCHAR(200), INDEX (b), INDEX (c,d) )");
+my $pq = $conn->prepare( "INSERT INTO ".$temptable."_single ( a, b, c, d ) VALUES ( ?, ?, ?, ? )" );
 
 
 # Let's start!
@@ -74,7 +78,7 @@ printlog("Logging results to: $resultsfile");
 open(my $rf, '>', $resultsfile);
 select((select($rf), $|=1)[0]); # Perl blackmagic for turning off write buffering
 my $completecmd = join " ", $0, @ARGV;
-my $completerows = $iterations * $batchsize * 3;
+my $completerows = $iterations * $batchsize;
 print $rf <<EOF;
 # ------------------------------------------------------------------------
 # INSERT vs LOAD DATA INFILE Benchmark Results
@@ -103,7 +107,7 @@ EOF
 for (my $x = 1; $x <= $iterations; $x++){
 
   printlog("Iteration: " . $x);
-  my $totalrows = $batchsize * ($x - 1) * 3;
+  my $totalrows = $batchsize * ($x - 1);
   printlog("\tCurrent row count: $totalrows");
 
 
@@ -141,7 +145,7 @@ for (my $x = 1; $x <= $iterations; $x++){
   printlog("\tStarting Multi-Row INSERT benchmark...");
   $start = time;
   open($fh, '<', $tempfile);
-  my $query_prefix = "INSERT INTO $temptable (a,b,c,d) VALUES ";
+  my $query_prefix = "INSERT INTO ".$temptable."_multi (a,b,c,d) VALUES ";
   my $values = '';
   my $counter = 0;
   $conn->do("BEGIN");
@@ -179,7 +183,7 @@ for (my $x = 1; $x <= $iterations; $x++){
 
   printlog("\tStarting LOAD DATA INFILE benchmark...");
   $start = time;
-  $conn->do("LOAD DATA LOCAL INFILE '$tempfile' INTO TABLE $temptable ( a, b, c, d )");
+  $conn->do("LOAD DATA LOCAL INFILE '$tempfile' INTO TABLE ".$temptable."_ldi ( a, b, c, d )");
   $end = time;
   my $total_ldi = $end - $start;
   if ($total_ldi < 1) {
@@ -188,12 +192,14 @@ for (my $x = 1; $x <= $iterations; $x++){
   my $qps_ldi = sprintf("%.1f", $batchsize / $total_ldi);
   printlog("\tCompleted $batchsize in $total_ldi seconds ($qps_ldi rows per second)");
 
-  print $rf $batchsize*$x*3 . ",$total_single,$qps_single,$total_multi,$qps_multi,$total_ldi,$qps_ldi\n";
+  print $rf $batchsize*$x . ",$total_single,$qps_single,$total_multi,$qps_multi,$total_ldi,$qps_ldi\n";
 }
 
 printlog("Cleaning up...");
 unlink $tempfile;
-$conn->do("DROP TABLE IF EXISTS $temptable");
+$conn->do("DROP TABLE IF EXISTS ".$temptable."_single");
+$conn->do("DROP TABLE IF EXISTS ".$temptable."_multi");
+$conn->do("DROP TABLE IF EXISTS ".$temptable."_ldi");
 printlog("All done. Thanks for playing!");
 
 sub printlog {
