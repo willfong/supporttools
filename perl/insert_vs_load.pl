@@ -101,6 +101,7 @@ print $rf <<EOF;
 # Column 6: LOAD DATA INFILE load time in seconds
 # Column 7: LOAD DATA INFILE rows per second
 # ------------------------------------------------------------------------
+total_rows,single_insert_time,single_insert_rate,multi_insert_time,multi_insert_rate,ldi_time,ldi_rate
 EOF
 
 
