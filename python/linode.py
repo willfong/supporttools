@@ -39,6 +39,7 @@ list - List nodes
 delete - Delete VM node
 
 transfer - Network Transfer Pool Quota
+rest - Manuall call Linode API
 help - This help menu
 quit - Quit
 
