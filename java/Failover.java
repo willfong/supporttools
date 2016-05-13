@@ -48,6 +48,7 @@ public class Failover
       stmt.execute("SELECT 1");
       conn.setReadOnly(true);
       stmt.execute("SELECT 2");
+      conn.setReadOnly(false);
 
       System.out.println("Sleeping for 30 seconds...");
       Thread.sleep(30000);
@@ -58,6 +59,7 @@ public class Failover
       stmt.execute("SELECT 1");
       conn.setReadOnly(true);
       stmt.execute("SELECT 2");
+      conn.setReadOnly(false);
 
       System.out.println("All done!");
 
