@@ -26,6 +26,13 @@ select_total,select_rate,insert_total,insert_rate,update_total,update_rate,delet
 Monitors DML activity on a slave into CSV output.
 
 
+### sysbench.sh
+
+`Usage: ./sysbench.sh <tables> <rows> <warmup> <runtime> [header (optional)]`
+
+Wrapper script for my usual sysbench command. Outputs to a file for graphing.
+
+
 ### write_perf.sh
 
 `Usage: ./write_perf.sh <datadir> <sleep>`
