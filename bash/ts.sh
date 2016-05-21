@@ -2,22 +2,22 @@
 
 function show_help {
   echo "Usage: $0 <sleep> <command>"
+  echo "Make sure to quote the command"
 }
 
-if [ $# -lt 2 ]; then
+if [ $# -ne 2 ]; then
   show_help
   exit 1
 else
   START=0
   SLEEP=$1
-  shift
-  CMD=$@
+  CMD=$2
 fi
 
 while true; do
-  OUTPUT=$($CMD)
+  eval OUTPUT=\`$CMD\`
   echo "$START,$OUTPUT"
   sleep $SLEEP
-  START=$(($START+$SLEEP))  
+  START=$(($START+$SLEEP))
 done
 
