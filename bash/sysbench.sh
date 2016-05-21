@@ -29,9 +29,9 @@ function warmup {
 # runfor
 function runfor {
   printlog "Running test with $THREADS threads for $RUNTIME seconds..."
-  if [ ! -z $HEADER ]; then echo $HEADER >> $RESULTFILE; fi
-  $SYSB --num-threads=$THREADS --oltp-tables-count=$TABLES --oltp-table-size=$ROWS --max-time=$RUNTIME run | grep "tps: " | cut -d : -f 3 | cut -d , -f 1 | awk '{$1=$1};1' >> $RESULTFILE
-} 
+  if [ ! -z $HEADER ]; then echo $HEADER"_tps,"$HEADER"_reads,"$HEADER"_writes,"$HEADER"_response" >> $RESULTFILE; fi
+  $SYSB --num-threads=$THREADS --oltp-tables-count=$TABLES --oltp-table-size=$ROWS --max-time=$RUNTIME run | grep "tps: " | sed 's/ //g' | cut -d, -f 2,3,4,5 | sed 's/[a-zA-Z]//g' | sed 's/(95%)//g' | sed 's/://g' >> $RESULTFILE
+}
 
 # cleanup
 function cleanup {
@@ -54,11 +54,10 @@ else
   HEADER=$5
 fi
 
-# The process 
+# The process
 
 cleanup
 prepare
 warmup
 runfor
-cleanup 
-
+cleanup
