@@ -1,10 +1,16 @@
 #!/bin/bash
 
-# Core Sysbench command
+# Stuff that might need to be changed
 SYSB="sysbench/sysbench/sysbench --test=sysbench/sysbench/tests/db/oltp.lua --mysql-host=127.0.0.1 --mysql-port=3306 --mysql-user=root --mysql-password= --mysql-db=test --mysql-table-engine=innodb --mysql-ignore-duplicates=on --oltp-read-only=off --oltp-dist-type=uniform --oltp-skip-trx=off --init-rng=on --oltp-test-mode=complex --max-requests=0 --report-interval=60"
+
+CLI="mysql"
+DATADIR="/var/lib/mysql/test"
+
+
 
 THREADS=$(($(cat /proc/cpuinfo |grep "processor" | wc -l) * 2))
 RESULTFILE="results-$(date +%Y%m%d%H%M%S).txt"
+
 
 # printlog <logline>
 function printlog {
@@ -16,7 +22,7 @@ function prepare {
   printlog "Preparing $TABLES tables with $ROWS rows..."
   echo "# Tables: $TABLES, Rows: $ROWS" > $RESULTFILE
   $SYSB --max-time=60 --oltp-tables-count=$TABLES --oltp-table-size=$ROWS prepare > /dev/null
-  echo "# $(du -sh /var/lib/mysql/test)" >> $RESULTFILE
+  echo "# $(du -sh $DATADIR)" >> $RESULTFILE
   printlog "Writing results to: $RESULTFILE"
 }
 
@@ -36,7 +42,7 @@ function runfor {
 # cleanup
 function cleanup {
   printlog "Cleaning up tables..."
-  mysql -BNe "SHOW TABLES LIKE 'sbtest%'" test | xargs -I ID mysql -e "DROP TABLE ID" test
+  $CLI -BNe "SHOW TABLES LIKE 'sbtest%'" test | xargs -I ID $CLI -e "DROP TABLE ID" test
 }
 
 function show_help {
