@@ -39,21 +39,14 @@
 
   <body>
     <div class="container">
-      <div class="page-header">
-        <h1>MariaDB Status Diff</h1>
+      <div class="page-header"><h1>MariaDB Status Diff</h1></div>
+      <textarea id="inputBox" class="form-control" rows="3"></textarea>
+      <div class="row">
+        <div class="col-md-6"><div class="checkbox"><label><input id="showChanged" type="checkbox" checked> Only Show Changes</label></div></div>
+        <div class="col-md-6"><button id="btnAdd" type="button" class="btn btn-default pull-right">Add</button></div>
       </div>
-      <p>
-        <form class="form-inline" id="inputForm">
-          <textarea id="inputBox" class="form-control" rows="3"></textarea>
-          <div class="checkbox"><label><input id="showChanged" type="checkbox" checked> Only Show Changes</label></div>
-          <button id="btnAdd" type="button" class="btn btn-default">Add</button>
-        </form>
-      </p>
-      <table class="table table-hover" id="results">
-         <tbody>
-         </tbody>
-       </table>
     </div>
+    <table class="table table-hover" id="results"><tbody></tbody></table>
   </body>
   <script type="text/javascript">
 var keys = {};
@@ -116,8 +109,8 @@ function recordData (key, value) {
   if (keys[key].count > 1) {
     var prevVal = document.getElementById(`${keys[key].count-1}_${key}`).innerHTML;
 
-    if (value > prevVal) col.style.backgroundColor = '#DDFFDD';
-    if (value < prevVal) col.style.backgroundColor = '#FFDDDD';
+    if (Number(value) > Number(prevVal)) col.style.backgroundColor = '#DDFFDD';
+    if (Number(value) < Number(prevVal)) col.style.backgroundColor = '#FFDDDD';
   }
 
 };
@@ -139,6 +132,8 @@ function showChanged () {
 function start () {
   processLines(removeHeaders(document.getElementById('inputBox').value.trim().split('\n')));
   showChanged();
+  document.getElementById('inputBox').value = '';
+  document.getElementById('btnAdd').blur();
 };
 
 document.getElementById('btnAdd').addEventListener('click', start);
