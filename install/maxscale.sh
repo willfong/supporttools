@@ -1,4 +1,4 @@
-yum -y install https://downloads.mariadb.com/enterprise/he05-e19h/mariadb-maxscale/1.4.1/rhel/6/x86_64/maxscale-1.4.1-1.rhel_6.x86_64.rpm
+yum -y install http://downloads.mariadb.com/enterprise/he05-e19h/mariadb-maxscale/1.4.3/rhel/6/x86_64/maxscale-1.4.3-1.rhel.6.x86_64.rpm 
 
 maxkeys /var/lib/maxscale/
 MAXSCALEPASSWORD=$(maxpasswd /var/lib/maxscale/ password | head -n1)

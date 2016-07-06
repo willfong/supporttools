@@ -8,8 +8,8 @@ datadir=/var/lib/mysql
 pid_file=/var/lib/mysql/mysql.pid
 socket=/var/lib/mysql/mysql.sock
 
-innodb_buffer_pool_size=256M
-innodb_log_file_size=256M
+innodb_buffer_pool_size=1G
+innodb_log_file_size=1G
 sync_binlog=0
 innodb_flush_log_at_trx_commit=2
 skip-innodb_doublewrite

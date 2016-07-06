@@ -18,6 +18,12 @@ select_total,select_rate,insert_total,insert_rate,update_total,update_rate,delet
 7343760,4843,525941,345,1048953,691,524450,345
 </pre>
 
+## bench_threads.sh
+
+`Usage: ./bench_threads.sh <tables> <rows> <runtime>`
+
+This is a simple wrapper script for sysbench that shows results for various thread counts.
+
 
 ### replication.sh
 
