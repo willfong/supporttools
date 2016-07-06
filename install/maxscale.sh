@@ -14,6 +14,7 @@ router_options=running
 servers=db
 user=maxscale
 passwd=$MAXSCALEPASSWORD
+enable_root_user=true
 
 [Listener]
 type=listener
@@ -44,6 +45,8 @@ echo "
 
 MaxScale configured to listen on port 4306
 
-Make sure to add the MaxScale users!
+Make sure to add the MaxScale users, listed in maxscaleusers.sh
+Make sure the 'maxscale' user can log in, might need to remove anonymous users
+
 "
 
