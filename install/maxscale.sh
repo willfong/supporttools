@@ -39,6 +39,47 @@ protocol=maxscaled
 address=localhost
 port=6603
 
+
+[rwsplit]
+type=service
+router=readwritesplit
+servers=node1,node2,node3
+user=maxscale
+passwd=C1793512F3F7570A5CCBA7B04DF151BD
+enable_root_user=true
+
+[rwsplitlistener]
+type=listener
+service=rwsplit
+protocol=MySQLClient
+port=4307
+
+[Replication Monitor]
+type=monitor
+module=mysqlmon
+servers=node1,node2,node3
+user=maxscale
+passwd=C1793512F3F7570A5CCBA7B04DF151BD
+
+[node1]
+type=server
+address=127.0.0.1
+port=3307
+protocol=MySQLBackend
+
+[node2]
+type=server
+address=127.0.0.1
+port=3308
+protocol=MySQLBackend
+
+[node3]
+type=server
+address=127.0.0.1
+port=3309
+protocol=MySQLBackend
+
+
 EOF
 
 echo "
