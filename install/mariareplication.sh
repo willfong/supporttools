@@ -47,6 +47,9 @@ server-id=1
 log-bin=binlog
 log-bin-index=binlog.index
 
+#plugin_load="rpl_semi_sync_master=semisync_master.so;rpl_semi_sync_slave=semisync_slave.so"
+#rpl_semi_sync_master_enabled = ON
+#rpl_semi_sync_slave_enabled = ON
 
 EOF
 
@@ -77,6 +80,9 @@ server-id=2
 relay-log=relay
 relay-log-index=relay.index
 
+#plugin_load="rpl_semi_sync_master=semisync_master.so;rpl_semi_sync_slave=semisync_slave.so"
+#rpl_semi_sync_master_enabled = ON
+#rpl_semi_sync_slave_enabled = ON
 
 EOF
 

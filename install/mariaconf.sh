@@ -33,4 +33,10 @@ performance_schema=off
 
 # CHANGE MASTER TO MASTER_HOST='192.168.0.0', MASTER_USER='repl', MASTER_LOG_FILE='binlog.000001', MASTER_LOG_POS=107;
 
+#plugin_load="rpl_semi_sync_master=semisync_master.so;rpl_semi_sync_slave=semisync_slave.so"
+#rpl_semi_sync_master_enabled = ON
+#rpl_semi_sync_slave_enabled = ON
+
+
+
 EOF
