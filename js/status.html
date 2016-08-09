@@ -114,14 +114,16 @@ function recordData (key, value) {
   }
   var col = row.insertCell();
   col.id = `${keys[key].count}_${key}`;
-  col.appendChild(document.createTextNode(value));
 
   if (keys[key].count > 1) {
-    var prevVal = document.getElementById(`${keys[key].count-1}_${key}`).innerHTML;
-
+    var [prevVal, ] = document.getElementById(`${keys[key].count-1}_${key}`).innerHTML.split(' ');
     if (value > prevVal) col.style.backgroundColor = '#EEFFEE';
     if (value < prevVal) col.style.backgroundColor = '#FFEEEE';
+    var diff = value - prevVal;
+    value = `${value} (${diff})`;
   }
+
+  col.appendChild(document.createTextNode(value));
 
 };
 
