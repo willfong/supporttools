@@ -18,6 +18,7 @@ innodb_autoinc_lock_mode=2
 datadir=/var/lib/mysql
 
 # 3. wsrep provider configuration: basic wsrep options
+wsrep_on=ON
 wsrep_provider=/usr/lib64/galera/libgalera_smm.so
 wsrep_provider_options="gcache.size=1G; gcache.page_size=1G"
 wsrep_cluster_address=gcomm://
