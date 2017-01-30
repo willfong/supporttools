@@ -17,6 +17,7 @@ distros.append({ 'id': 127, 'name': 'CentOS 6' })
 distros.append({ 'id': 60, 'name': 'CentOS 5' })
 distros.append({ 'id': 124, 'name': 'Ubuntu 14.04 LTS' })
 distros.append({ 'id': 146, 'name': 'Ubuntu 16.04 LTS' })
+distros.append({ 'id': 155, 'name': 'Fedora 25' })
 
 try: 
   f = open('.linodeapi', 'r')
