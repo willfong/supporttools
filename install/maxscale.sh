@@ -45,7 +45,7 @@ type=service
 router=readwritesplit
 servers=node1,node2,node3
 user=maxscale
-passwd=C1793512F3F7570A5CCBA7B04DF151BD
+passwd=$MAXSCALEPASSWORD
 enable_root_user=true
 
 [rwsplitlistener]
@@ -59,7 +59,8 @@ type=monitor
 module=mysqlmon
 servers=node1,node2,node3
 user=maxscale
-passwd=C1793512F3F7570A5CCBA7B04DF151BD
+passwd=$MAXSCALEPASSWORD
+#detect_stale_master=true
 
 [node1]
 type=server
