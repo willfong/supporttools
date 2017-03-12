@@ -134,3 +134,15 @@ Host 198.58.*.*
   StrictHostKeyChecking no
   UserKnownHostsFile=/dev/null
 
+Host 172.104.*.*
+  User root
+  ChallengeResponseAuthentication no
+  StrictHostKeyChecking no
+  UserKnownHostsFile=/dev/null
+
+Host 173.230.*.*
+  User root
+  ChallengeResponseAuthentication no
+  StrictHostKeyChecking no
+  UserKnownHostsFile=/dev/null
+
