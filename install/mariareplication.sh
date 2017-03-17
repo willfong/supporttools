@@ -1,7 +1,7 @@
-URL=http://downloads.mariadb.com/files/MariaDB/mariadb-10.0.22/bintar-linux-x86_64/mariadb-10.0.22-linux-x86_64.tar.gz
+URL=https://downloads.mariadb.com/MariaDB/mariadb-10.0.30/bintar-linux-x86_64/mariadb-10.0.30-linux-x86_64.tar.gz
 
 yum -y install libaio
-rpm -Uvh http://downloads.mariadb.com/files/MariaDB/mariadb-10.1.8/yum/centos6-amd64/rpms/jemalloc-3.6.0-1.el6.x86_64.rpm
+rpm -Uvh https://downloads.mariadb.com/MariaDB/mariadb-10.0.30/yum/centos6-amd64/rpms/jemalloc-3.6.0-1.el6.x86_64.rpm
 groupadd mysql
 useradd -r -g mysql mysql
 cd /usr/local
