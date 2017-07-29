@@ -1,4 +1,4 @@
-apt-get install -y git libmysqlclient-dev automake libtool make 
+apt-get install -y git libmysqlclient-dev automake libtool make pkg-config
 git clone https://github.com/akopytov/sysbench.git
 cd sysbench
 ./autogen.sh
